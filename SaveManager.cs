@@ -16,9 +16,9 @@ public enum DocType
 
 public static class SaveManager
 {
-    public static PLayerData pLayerData;
-    public static GeneralData generalData;
-    public static CustomizationData customizationData;
+    public static PLayerData pLayerData = new PlayerData();
+    public static GeneralData generalData = new GeneralData();
+    public static CustomizationData customizationData = new CustomizationData();
 
     private static readonly string myFileNameExtension = ".xml";
 
