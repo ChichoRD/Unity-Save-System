@@ -3,7 +3,7 @@ A flexible, expansible Save System for Unity developers; all in one file.
 
 
 # How to add this to your project
-Just drag and drop the ```SaveManager.cs``` script into your project and you are ready to use it
+Just drag and drop the ```SaveManager.cs``` script into your project and you are ready to use it.
 
 
 # How to use it via code
