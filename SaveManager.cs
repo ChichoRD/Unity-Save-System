@@ -34,19 +34,49 @@ public enum DocType
 
 public static class SaveManager
 {
+    private static readonly List<object> unsavedData = new();
+
     private static PLayerData pLayerData = new();
     private static GeneralData generalData = new();
     private static CustomizationData customizationData = new();
 
     private static readonly string fileExtension = ".xml";
+    private static readonly string overrideWarning = "Warning: Tried to load data with unsaved changes";
 
-    public static Action OnSaved { get; private set; }
-    public static Action OnLoaded { get; private set; }
-    public static Action OnDeleted { get; private set; }
+    public static Action<object> OnSaved { get; set; }
+    public static Action<object> OnLoaded { get; set; }
+    public static Action OnDeleted { get; set; }
 
-    public static PLayerData PLayerData { get => pLayerData ?? new(); set => pLayerData = value; }
-    public static GeneralData GeneralData { get => generalData ?? new(); set => generalData = value; }
-    public static CustomizationData CustomizationData { get => customizationData ?? new(); set => customizationData = value; }
+    public static PLayerData PLayerData
+    {
+        get => pLayerData;
+        set
+        {
+            pLayerData = value;
+            unsavedData.Add(value);
+        }
+    }
+
+    public static GeneralData GeneralData
+    {
+        get => generalData;
+        set
+        {
+            generalData = value;
+            unsavedData.Add(value);
+        }
+    }
+
+    public static CustomizationData CustomizationData
+    {
+        get => customizationData;
+        set
+        {
+            customizationData = value;
+            unsavedData.Add(value);
+        }
+    }
+
 
     private static readonly string DataPath = Application.persistentDataPath;
     private static string StreamPath(string fileName, string dataPath) => dataPath + "/" + fileName + fileExtension;
@@ -59,7 +89,9 @@ public static class SaveManager
         serializer.Serialize(stream, dataToSave);
         stream.Close();
 
-        OnSaved?.Invoke();
+        OnSaved?.Invoke(dataToSave);
+        unsavedData.Remove(dataToSave);
+
         Debug.Log("Saved");
     }
 
@@ -70,7 +102,9 @@ public static class SaveManager
         serializer.Serialize(stream, dataToSave);
         stream.Close();
 
-        OnSaved?.Invoke();
+        OnSaved?.Invoke(dataToSave);
+        unsavedData.Remove(dataToSave);
+
         Debug.Log("Saved");
     }
 
@@ -83,7 +117,15 @@ public static class SaveManager
             dataToLoad = serializer.Deserialize(stream) as T;
             stream.Close();
 
-            OnLoaded?.Invoke();
+            if (unsavedData.Exists(d => d is T))
+            {
+                Debug.LogWarning(overrideWarning);
+                var unsaved = unsavedData.Find(d => d is T);
+                dataToLoad = SaveAndLoad((T)unsaved, fileName);
+                return;
+            }
+
+            OnLoaded?.Invoke(dataToLoad);
             Debug.Log("Loaded");
             return;
         }
@@ -100,7 +142,15 @@ public static class SaveManager
             dataToLoad = serializer.Deserialize(stream) as T;
             stream.Close();
 
-            OnLoaded?.Invoke();
+            if (unsavedData.Exists(d => d is T))
+            {
+                Debug.LogWarning(overrideWarning);
+                var unsaved = unsavedData.Find(d => d is T);
+                dataToLoad = SaveAndLoad((T)unsaved, fileType);
+                return;
+            }
+
+            OnLoaded?.Invoke(dataToLoad);
             Debug.Log("Loaded");
             return;
         }
@@ -119,7 +169,14 @@ public static class SaveManager
             data = serializer.Deserialize(stream) as T;
             stream.Close();
 
-            OnLoaded?.Invoke();
+            if (unsavedData.Exists(d => d is T))
+            {
+                Debug.LogWarning(overrideWarning);
+                var unsaved = unsavedData.Find(d => d is T);
+                return SaveAndLoad((T)unsaved, fileName);
+            }
+
+            OnLoaded?.Invoke(data);
             Debug.Log("Loaded");
             return data;
         }
@@ -139,7 +196,14 @@ public static class SaveManager
             data = serializer.Deserialize(stream) as T;
             stream.Dispose();
 
-            OnLoaded?.Invoke();
+            if (unsavedData.Exists(d => d is T))
+            {
+                Debug.LogWarning(overrideWarning);
+                var unsaved = unsavedData.Find(d => d is T);
+                return SaveAndLoad((T)unsaved, fileType);
+            }
+
+            OnLoaded?.Invoke(data);
             Debug.Log("Loaded");
             return data;
         }
@@ -188,6 +252,23 @@ public static class SaveManager
         return Load<T>(docType);
     }
 
+    public static void LoadAndSave<T>(ref T dataToLoadAndSave, string fileName, Action<T> codeBetween = null) where T : class, new()
+    {
+        dataToLoadAndSave = Load<T>(fileName);
+
+        codeBetween?.Invoke(dataToLoadAndSave);
+
+        Save(dataToLoadAndSave, fileName);
+    }
+
+    public static T SaveAndLoad<T>(T dataToLoadAndSave, string fileName, Action codeBetween = null) where T : class, new()
+    {
+        Save(dataToLoadAndSave, fileName);
+
+        codeBetween?.Invoke();
+
+        return Load<T>(fileName);
+    }
 
     public static T GetFieldValue<T>(object obj, string fieldName)
     {
@@ -217,21 +298,38 @@ public static class SaveManager
             _ => nameof(GeneralData)
         };
     }
+
+    public static void LoadAllData()
+    {
+        CustomizationData = Load<CustomizationData>(DocType.CustomizationData) ?? new();
+        PLayerData = Load<PLayerData>(DocType.PlayerData) ?? new();
+        GeneralData = Load<GeneralData>(DocType.GeneralData) ?? new();
+    }
+
+    public static void SaveAllData()
+    {
+        Save(CustomizationData, DocType.CustomizationData);
+        Save(PLayerData, DocType.PlayerData);
+        Save(GeneralData, DocType.GeneralData);
+
+        unsavedData.Clear();
+    }
+
 }
 
-[System.Serializable]
+[Serializable]
 public sealed class GeneralData
 {
-
+    
 }
 
-[System.Serializable]
+[Serializable]
 public sealed class PLayerData
 {
-
+    
 }
 
-[System.Serializable]
+[Serializable]
 public sealed class CustomizationData
 {
     // Video Settings
