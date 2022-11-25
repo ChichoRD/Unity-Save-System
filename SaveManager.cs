@@ -108,6 +108,17 @@ public static class SaveManager
         Debug.Log("Saved");
     }
 
+    public static void SaveImage(Texture2D texture, string fileName)
+    {
+        var bytes = texture.EncodeToPNG();
+        File.WriteAllBytes(StreamPath(fileName, DataPath), bytes);
+
+        OnSaved?.Invoke(texture);
+        unsavedData.Remove(texture);
+
+        Debug.Log("Saved Image");
+    }
+
     public static void Load<T>(out T dataToLoad, string fileName) where T : class, new()
     {
         if (File.Exists(StreamPath(fileName, DataPath)))
@@ -160,57 +171,62 @@ public static class SaveManager
 
     public static T Load<T>(string fileName) where T : class, new()
     {
-        if (File.Exists(StreamPath(fileName, DataPath)))
+        T data = new T();
+        if (!File.Exists(StreamPath(fileName, DataPath))) return data;
+
+        var serializer = new XmlSerializer(typeof(T));
+        var stream = new FileStream(StreamPath(fileName, DataPath), FileMode.Open);
+        data = serializer.Deserialize(stream) as T;
+        stream.Close();
+
+        if (unsavedData.Exists(d => d is T))
         {
-            T data;
-
-            var serializer = new XmlSerializer(typeof(T));
-            var stream = new FileStream(StreamPath(fileName, DataPath), FileMode.Open);
-            data = serializer.Deserialize(stream) as T;
-            stream.Close();
-
-            if (unsavedData.Exists(d => d is T))
-            {
-                Debug.LogWarning(overrideWarning);
-                var unsaved = unsavedData.Find(d => d is T);
-                return SaveAndLoad((T)unsaved, fileName);
-            }
-
-            OnLoaded?.Invoke(data);
-            Debug.Log("Loaded");
-            return data;
+            Debug.LogWarning(overrideWarning);
+            var unsaved = unsavedData.Find(d => d is T);
+            return SaveAndLoad((T)unsaved, fileName);
         }
 
-        return new T();
+        OnLoaded?.Invoke(data);
+        Debug.Log("Loaded");
+        return data;
     }
 
 
     public static T Load<T>(DocType fileType) where T : class, new()
     {
-        if (File.Exists(StreamPath(fileType, DataPath)))
+        T data = new T();
+        if (!File.Exists(StreamPath(fileType, DataPath))) return data;
+
+        var serializer = new XmlSerializer(typeof(T));
+        var stream = new FileStream(StreamPath(fileType, DataPath), FileMode.Open);
+        data = serializer.Deserialize(stream) as T;
+        stream.Dispose();
+
+        if (unsavedData.Exists(d => d is T))
         {
-            T data;
-
-            var serializer = new XmlSerializer(typeof(T));
-            var stream = new FileStream(StreamPath(fileType, DataPath), FileMode.Open);
-            data = serializer.Deserialize(stream) as T;
-            stream.Dispose();
-
-            if (unsavedData.Exists(d => d is T))
-            {
-                Debug.LogWarning(overrideWarning);
-                var unsaved = unsavedData.Find(d => d is T);
-                return SaveAndLoad((T)unsaved, fileType);
-            }
-
-            OnLoaded?.Invoke(data);
-            Debug.Log("Loaded");
-            return data;
+            Debug.LogWarning(overrideWarning);
+            var unsaved = unsavedData.Find(d => d is T);
+            return SaveAndLoad((T)unsaved, fileType);
         }
 
-        return new T();
+        OnLoaded?.Invoke(data);
+        Debug.Log("Loaded");
+        return data;
     }
 
+    public static Texture2D LoadImage(string fileName)
+    {
+        if (!File.Exists(StreamPath(fileName, DataPath))) return null;
+
+        var bytes = File.ReadAllBytes(StreamPath(fileName, DataPath));
+        var texture = new Texture2D(2, 2);
+        texture.LoadImage(bytes);
+
+        OnLoaded?.Invoke(texture);
+        Debug.Log("Loaded Image");
+
+        return texture;
+    }
 
     public static void DeleteSavedData(string fileName)
     {
