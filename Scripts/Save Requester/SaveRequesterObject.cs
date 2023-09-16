@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = SAVE_REQUESTER_NAME, menuName = SAVER_REQUESTER_PATH + SAVE_REQUESTER_NAME)]
@@ -11,13 +10,12 @@ public class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventR
     private ISaveService _saveService;
     private List<IPersistentSaveable> _persistentSaveables;
 
-    public class SaveDictionary : SerializableDictionary<string, object> { }
-
+    public bool Initialized { get; private set; }
     public bool Delete(string path) => _saveService.Delete(path);
 
     public bool Load(string path)
     {
-        if (!_saveService.Load(out SaveDictionary data, path)) return false;
+        if (!_saveService.Load(out Dictionary<string, object> data, path)) return false;
 
         foreach (var persistentSaveable in _persistentSaveables)
         {
@@ -29,7 +27,7 @@ public class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventR
 
     public bool Save(string path)
     {
-        SaveDictionary data = new SaveDictionary();
+        Dictionary<string, object> data = new Dictionary<string, object>();
         foreach (var persistentSaveable in _persistentSaveables)
             data.Add(persistentSaveable.ID, persistentSaveable.Saveable.GetSaveData());
 
@@ -49,6 +47,6 @@ public class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventR
     {
         _saveService = saveService;
         _persistentSaveables = new List<IPersistentSaveable>();
-        return true;
+        return Initialized = true;
     }
 }

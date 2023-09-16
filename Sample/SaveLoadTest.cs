@@ -1,6 +1,3 @@
-using System;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -27,6 +24,7 @@ public class SaveLoadTest : MonoBehaviour, ISaveable
 
     public object GetSaveData()
     {
+        _saveTestData.testPngEncodedTexture = _saveTestData.testTexture.EncodeToPNG();
         return _saveTestData;
     }
 
@@ -34,14 +32,23 @@ public class SaveLoadTest : MonoBehaviour, ISaveable
     {
         if (saveData is not SaveTestData saveTestData) return false;
 
-        _saveTestData = saveTestData;
+        _saveTestData = new SaveTestData()
+        {
+            testInt = saveTestData.testInt,
+            testFloat = saveTestData.testFloat,
+            testString = saveTestData.testString,
+            testTexture = new Texture2D(2, 2),
+            testPngEncodedTexture = saveTestData.testPngEncodedTexture,
+        };
+        _saveTestData.testTexture.LoadImage(saveTestData.testPngEncodedTexture);
+
         return true;
     }
 
     [ContextMenu(nameof(TestInitialize))]
     private void TestInitialize()
     {
-        _savePathProviderObject.SaveService = new XmlSaveService();
+        _savePathProviderObject.SaveService = new JsonSaveService();
         SaveRequester.Initialize(_savePathProviderObject.SaveService);
     }
 
@@ -68,13 +75,4 @@ public class SaveLoadTest : MonoBehaviour, ISaveable
     {
         SaveRequester.Load(SavePathProvider.GetSavePath());
     }
-}
-
-[XmlInclude(typeof(SaveTestData))]
-[Serializable]
-public struct SaveTestData
-{
-    public int testInt;
-    public float testFloat;
-    public string testString;
 }

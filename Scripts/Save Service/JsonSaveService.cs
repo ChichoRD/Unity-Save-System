@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using System.Runtime.Serialization.Json;
+using Unity.Plastic.Newtonsoft.Json;
 
 public class JsonSaveService : ISaveService
 {
@@ -17,20 +17,37 @@ public class JsonSaveService : ISaveService
         data = default;
         if (!File.Exists(path)) return false;
 
-        var serializer = new DataContractJsonSerializer(typeof(T));
-        using var stream = new FileStream(path, FileMode.Open);
-        data = (T)serializer.ReadObject(stream);
-        stream.Close();
+        var serializer = new JsonSerializer()
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+        };
+
+        using var streamReader = new StreamReader(path);
+        using var jsonReader = new JsonTextReader(streamReader);
+
+        data = serializer.Deserialize<T>(jsonReader);
+
+        jsonReader.Close();
+        streamReader.Close();
 
         return true;
     }
 
     public bool Save<T>(T data, string path)
     {
-        var serializer = new DataContractJsonSerializer(typeof(T));
-        using var stream = new FileStream(path, FileMode.Create);
-        serializer.WriteObject(stream, data);
-        stream.Close();
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        var serializer = new JsonSerializer()
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+        };
+
+        using var streamWriter = new StreamWriter(path);
+        using var jsonWriter = new JsonTextWriter(streamWriter);
+
+        serializer.Serialize(streamWriter, data);
+
+        jsonWriter.Close();
+        streamWriter.Close();
 
         return true;
     }

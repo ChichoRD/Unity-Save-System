@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8438b7a41ecd9dc47992429604979245, type: 3}
   m_Name: Relative Path Provider
   m_EditorClassIdentifier: 
-  _relativePath: 
+  _relativePath: Save Data
   _fileName: SaveDataTest
