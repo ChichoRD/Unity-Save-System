@@ -1,5 +1,4 @@
-﻿public interface IPersistentSaveable
+﻿public interface IPersistentSaveable : ISaveable
 {
     string ID { get; }
-    ISaveable Saveable { get; }
 }

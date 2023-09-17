@@ -60,7 +60,7 @@ public class SaveLoadTest : MonoBehaviour, ISaveable
     [ContextMenu(nameof(TestInitialize))]
     private void TestInitialize()
     {
-        _savePathProviderObject.SaveService = new JsonSaveService();
+        _savePathProviderObject.SaveService = new XmlSaveService(typeof(SaveTestData));
         SaveRequester.Initialize(_savePathProviderObject.SaveService);
     }
 

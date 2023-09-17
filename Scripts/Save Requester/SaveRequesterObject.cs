@@ -20,7 +20,7 @@ public class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventR
         foreach (var persistentSaveable in _persistentSaveables)
         {
             if (persistentSaveable == null || !data.TryGetValue(persistentSaveable.ID, out var value)) continue;
-            persistentSaveable.Saveable.TrySetSaveData(value);
+            persistentSaveable.TrySetSaveData(value);
         }
         return true;
     }
@@ -30,8 +30,8 @@ public class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventR
         Dictionary<string, object> data = new Dictionary<string, object>();
         foreach (var persistentSaveable in _persistentSaveables)
         {
-            if (persistentSaveable == null || persistentSaveable.Saveable == null) continue;
-            data.Add(persistentSaveable.ID, persistentSaveable.Saveable.GetSaveData());
+            if (persistentSaveable == null) continue;
+            data.Add(persistentSaveable.ID, persistentSaveable.GetSaveData());
         }
 
         return _saveService.Save(data, path);
