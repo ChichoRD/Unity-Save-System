@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Unity.Collections;
 using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 
@@ -22,5 +23,6 @@ public struct SaveTestData
     public Texture2D testTexture;
     [JsonProperty]
     [DataMember]
-    public byte[] testPngEncodedTexture;
+    [HideInInspector]
+    public byte[] testTextureData;
 }

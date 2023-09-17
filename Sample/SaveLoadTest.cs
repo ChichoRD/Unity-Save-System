@@ -24,7 +24,7 @@ public class SaveLoadTest : MonoBehaviour, ISaveable
 
     public object GetSaveData()
     {
-        _saveTestData.testPngEncodedTexture = _saveTestData.testTexture.EncodeToPNG();
+        _saveTestData.testTextureData = _saveTestData.testTexture.GetRawTextureData();
         return _saveTestData;
     }
 
@@ -37,10 +37,22 @@ public class SaveLoadTest : MonoBehaviour, ISaveable
             testInt = saveTestData.testInt,
             testFloat = saveTestData.testFloat,
             testString = saveTestData.testString,
-            testTexture = new Texture2D(2, 2),
-            testPngEncodedTexture = saveTestData.testPngEncodedTexture,
+            testTexture = new Texture2D(256, 256),
+            testTextureData = saveTestData.testTextureData,
         };
-        _saveTestData.testTexture.LoadImage(saveTestData.testPngEncodedTexture);
+
+        //Stopwatch stopwatch = new Stopwatch();
+        //stopwatch.Start();
+        _saveTestData.testTexture.LoadRawTextureData(saveTestData.testTextureData);
+        _saveTestData.testTexture.Apply();
+        //stopwatch.Stop();
+        //UnityEngine.Debug.Log($"Texture load time: {stopwatch.Elapsed.TotalMilliseconds}ms");
+
+        /*
+         * Benchmarking results:
+         * PNG Encoding/Decoding: 159kB, 2ms
+         * Raw Texture Data Encoding/Decoding: 456kB, 0.6ms
+         */
 
         return true;
     }
