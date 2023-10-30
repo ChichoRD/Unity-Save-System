@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 
+[Serializable]
 public class XmlSaveService : ISaveService
 {
     private readonly IEnumerable<Type> _knownTypes = new Type[0];

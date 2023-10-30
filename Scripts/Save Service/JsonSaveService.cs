@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Unity.Plastic.Newtonsoft.Json;
 
+[Serializable]
 public class JsonSaveService : ISaveService
 {
     public string PreferredFileExtension { get; } = ".json";

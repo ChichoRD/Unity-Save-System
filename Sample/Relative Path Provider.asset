@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Relative Path Provider
   m_EditorClassIdentifier: 
   _relativePath: Save Data
-  _fileName: SaveDataTest
+  _fileName: InventoryData

@@ -60,6 +60,7 @@ public class SaveLoadTest : MonoBehaviour, ISaveable
     [ContextMenu(nameof(TestInitialize))]
     private void TestInitialize()
     {
+        // TODO - Think of a better way to do this
         _savePathProviderObject.SaveService = new XmlSaveService(typeof(SaveTestData));
         SaveRequester.Initialize(_savePathProviderObject.SaveService);
     }

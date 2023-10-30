@@ -8,7 +8,7 @@ public class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventR
     private const string SAVER_REQUESTER_PATH = "Save System/";
 
     private ISaveService _saveService;
-    private List<IPersistentSaveable> _persistentSaveables;
+    private List<IPersistentSaveable> _persistentSaveables = new List<IPersistentSaveable>();
 
     public bool Initialized { get; private set; }
     public bool Delete(string path) => _saveService.Delete(path);
@@ -39,17 +39,17 @@ public class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventR
 
     public bool Subscribe(IPersistentSaveable persistentSaveable)
     {
-        if (_persistentSaveables.Contains(persistentSaveable)) return false;
+        if (!Initialized || _persistentSaveables.Contains(persistentSaveable)) return false;
         _persistentSaveables.Add(persistentSaveable);
         return true;
     }
 
-    public bool Unsubscribe(IPersistentSaveable persistentSaveable) => _persistentSaveables.Remove(persistentSaveable);
+    public bool Unsubscribe(IPersistentSaveable persistentSaveable) => Initialized && _persistentSaveables.Remove(persistentSaveable);
 
     public bool Initialize(ISaveService saveService)
     {
         _saveService = saveService;
-        _persistentSaveables = new List<IPersistentSaveable>();
+        _persistentSaveables.Clear();
         return Initialized = true;
     }
 }
