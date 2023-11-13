@@ -1,6 +1,6 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Runtime.Serialization;
-using Unity.Collections;
 using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
 
@@ -26,3 +26,4 @@ public struct SaveTestData
     [HideInInspector]
     public byte[] testTextureData;
 }
+#endif
