@@ -67,9 +67,9 @@ namespace SaveSystem.Sample
         [ContextMenu(nameof(TestInitialize))]
         private void TestInitialize()
         {
-            // TODO - Think of a better way to do this
-            _savePathProviderObject.SaveService = new XmlSaveService(typeof(SaveTestData));
-            SaveRequester.Initialize(_savePathProviderObject.SaveService);
+            SaveRequester.Initialize(new JsonSaveService());
+            //SaveRequester.Initialize(new XmlSaveService(typeof(SaveTestData)));
+            //SaveRequester.Initialize(new BinarySaveService());
         }
 
         [ContextMenu(nameof(TestSubscribe))]

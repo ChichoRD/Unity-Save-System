@@ -1,5 +1,4 @@
-﻿using SaveSystem.SaveService;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SaveSystem.SaveRequester.SavePath
 {
@@ -13,11 +12,10 @@ namespace SaveSystem.SaveRequester.SavePath
         [TextArea] private string _relativePath;
 
         [SerializeField] private string _fileName;
-
-        public ISaveService SaveService { get; set; }
+        [SerializeField] private string _fileExtension;
 
         public string GetSavePath() => new FileSavePathProvider(new SubfolderSavePathProvider(new PersistentDataPathProvider(), _relativePath),
                                                                 _fileName,
-                                                                SaveService.PreferredFileExtension).GetSavePath();
+                                                                _fileExtension).GetSavePath();
     }
 }

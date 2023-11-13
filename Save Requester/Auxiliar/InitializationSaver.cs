@@ -33,10 +33,6 @@ namespace SaveSystem.SaveRequester.Auxiliar
 
         private void Awake()
         {
-            // TODO - Refactor
-            if (SavePathProvider is RelativeSavePathProviderObject relativeSavePathProviderObject)
-                relativeSavePathProviderObject.SaveService = _saveService;
-
             SaveRequester.Initialize(_saveService);
         }
 
