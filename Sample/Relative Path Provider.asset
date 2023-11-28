@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _relativePath: Save Data
   _fileName: InventoryData
+  _fileExtension: .json

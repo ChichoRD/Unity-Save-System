@@ -97,5 +97,5 @@ namespace SaveSystem.Sample
             SaveRequester.Load(SavePathProvider.GetSavePath());
         }
     }
-#endif
 }
+#endif
