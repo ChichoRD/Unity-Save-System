@@ -48,7 +48,7 @@ namespace SaveSystem.SaveService
             using var streamWriter = new StreamWriter(path);
             using var jsonWriter = new JsonTextWriter(streamWriter);
 
-            serializer.Serialize(streamWriter, data);
+            serializer.Serialize(jsonWriter, data);
 
             jsonWriter.Close();
             streamWriter.Close();

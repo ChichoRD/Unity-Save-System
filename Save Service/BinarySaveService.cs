@@ -31,7 +31,7 @@ namespace SaveSystem.SaveService
             using var streamReader = new FileStream(path, FileMode.Open);
             using var binaryReader = new BinaryReader(streamReader);
 
-            data = (T)serializer.Deserialize(streamReader);
+            data = (T)serializer.Deserialize(binaryReader.BaseStream);
 
             binaryReader.Close();
             streamReader.Close();
@@ -50,7 +50,7 @@ namespace SaveSystem.SaveService
             using var streamWriter = new FileStream(path, FileMode.Create);
             using var binaryWriter = new BinaryWriter(streamWriter);
 
-            serializer.Serialize(streamWriter, data);
+            serializer.Serialize(binaryWriter.BaseStream, data);
 
             binaryWriter.Close();
             streamWriter.Close();
