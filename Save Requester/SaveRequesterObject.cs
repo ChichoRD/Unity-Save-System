@@ -24,7 +24,7 @@ namespace SaveSystem.SaveRequester
             foreach (var persistentSaveable in _persistentSaveables)
             {
                 if (persistentSaveable == null || !data.TryGetValue(persistentSaveable.ID, out var value)) continue;
-                persistentSaveable.TrySetSaveData(value);
+                persistentSaveable.Saveable.TrySetSaveData(value);
             }
             return true;
         }
@@ -35,7 +35,7 @@ namespace SaveSystem.SaveRequester
             foreach (var persistentSaveable in _persistentSaveables)
             {
                 if (persistentSaveable == null) continue;
-                data.Add(persistentSaveable.ID, persistentSaveable.GetSaveData());
+                data.Add(persistentSaveable.ID, persistentSaveable.Saveable.GetSaveData());
             }
 
             return _saveService.Save(data, path);
