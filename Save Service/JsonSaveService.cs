@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace SaveSystem.SaveService
 {
     [Serializable]
-    public class JsonSaveService : ISaveService
+    internal class JsonSaveService : ISaveService
     {
         public string PreferredFileExtension { get; } = ".json";
         public bool Delete(string path)

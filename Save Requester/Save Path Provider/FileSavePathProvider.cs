@@ -3,7 +3,7 @@ using System.IO;
 
 namespace SaveSystem.SaveRequester.SavePath
 {
-    public readonly struct FileSavePathProvider : ISavePathProvider
+    internal readonly struct FileSavePathProvider : ISavePathProvider
     {
         private readonly string _filePath;
 

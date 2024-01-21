@@ -7,7 +7,7 @@ using System.Xml;
 namespace SaveSystem.SaveService
 {
     [Serializable]
-    public class XmlSaveService : ISaveService
+    internal class XmlSaveService : ISaveService
     {
         private readonly IEnumerable<Type> _knownTypes = new Type[0];
         public string PreferredFileExtension { get; } = ".xml";

@@ -2,7 +2,7 @@
 
 namespace SaveSystem.SaveRequester.SavePath
 {
-    public readonly struct SubfolderSavePathProvider : ISavePathProvider
+    internal readonly struct SubfolderSavePathProvider : ISavePathProvider
     {
         private readonly string _subfolderName;
 

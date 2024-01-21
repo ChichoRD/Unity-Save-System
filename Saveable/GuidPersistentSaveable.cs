@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 namespace SaveSystem.Saveable
 {
-    public class GuidPersistentSaveable : MonoBehaviour, IPersistentSaveable
+    internal class GuidPersistentSaveable : MonoBehaviour, IPersistentSaveable
     {
         [SerializeField][HideInInspector] private string _id = string.Empty;
         public string ID => _id;

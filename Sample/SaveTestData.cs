@@ -7,7 +7,7 @@ using UnityEngine;
 [DataContract]
 [JsonObject(MemberSerialization.OptIn)]
 [Serializable]
-public struct SaveTestData
+internal struct SaveTestData
 {
     [JsonProperty]
     [DataMember]

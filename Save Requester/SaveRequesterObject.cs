@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SaveSystem.SaveRequester
 {
     [CreateAssetMenu(fileName = SAVE_REQUESTER_NAME, menuName = SAVER_REQUESTER_PATH + SAVE_REQUESTER_NAME)]
-    public class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventRaiser
+    internal class SaveRequesterObject : ScriptableObject, ISaveRequester, ISaveEventRaiser
     {
         private const string SAVE_REQUESTER_NAME = "Save Requester";
         private const string SAVER_REQUESTER_PATH = "Save System/";

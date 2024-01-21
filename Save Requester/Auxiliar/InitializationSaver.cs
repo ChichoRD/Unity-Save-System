@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SaveSystem.SaveRequester.Auxiliar
 {
-    public class InitializationSaver : MonoBehaviour
+    internal class InitializationSaver : MonoBehaviour
     {
         [RequireInterface(typeof(ISaveRequester), typeof(ScriptableObject))]
         [SerializeField]

@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace SaveSystem.SaveService
 {
     [Serializable]
-    public class BinarySaveService : ISaveService
+    internal class BinarySaveService : ISaveService
     {
         public string PreferredFileExtension { get; } = ".bin";
 

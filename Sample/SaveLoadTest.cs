@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace SaveSystem.Sample
 {
-    public class SaveLoadTest : MonoBehaviour, ISaveable
+    internal class SaveLoadTest : MonoBehaviour, ISaveable
     {
         //[RequireInterface(typeof(ISavePathProvider))]
         //[SerializeField] private Object _savePathProviderObject;

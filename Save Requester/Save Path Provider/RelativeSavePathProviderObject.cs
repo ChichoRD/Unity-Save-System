@@ -3,7 +3,7 @@
 namespace SaveSystem.SaveRequester.SavePath
 {
     [CreateAssetMenu(fileName = RELATIVE_PATH_PROVIDER_NAME, menuName = RELATIVE_PATH_PROVIDER_PATH + RELATIVE_PATH_PROVIDER_NAME)]
-    public class RelativeSavePathProviderObject : ScriptableObject, ISavePathProvider
+    internal class RelativeSavePathProviderObject : ScriptableObject, ISavePathProvider
     {
         private const string RELATIVE_PATH_PROVIDER_NAME = "Relative Path Provider";
         private const string RELATIVE_PATH_PROVIDER_PATH = "Save System/";

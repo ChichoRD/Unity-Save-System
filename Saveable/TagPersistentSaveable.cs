@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace SaveSystem.Saveable
 {
-    public class TagPersistentSaveable : MonoBehaviour, IPersistentSaveable
+    internal class TagPersistentSaveable : MonoBehaviour, IPersistentSaveable
     {
         [SerializeField][TextArea] private string _saveTag = string.Empty;
         [SerializeField] private bool _useHash;

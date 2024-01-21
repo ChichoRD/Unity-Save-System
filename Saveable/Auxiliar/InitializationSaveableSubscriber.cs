@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SaveSystem.Saveable.Auxiliar
 {
-    public class InitializationSaveableSubscriber : MonoBehaviour
+    internal class InitializationSaveableSubscriber : MonoBehaviour
     {
         [RequireInterface(typeof(ISaveEventRaiser), typeof(ScriptableObject))]
         [SerializeField]
