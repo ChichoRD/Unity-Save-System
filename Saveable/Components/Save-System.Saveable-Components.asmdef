@@ -1,0 +1,16 @@
+{
+    "name": "Save-System.Saveable-Components",
+    "rootNamespace": "",
+    "references": [
+        "GUID:9889ed27a0595114dbddb3c894a49167"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -7,10 +7,10 @@ using System.Xml;
 namespace SaveSystem.SaveService
 {
     [Serializable]
-    internal class XmlSaveService : ISaveService
+    internal class XmlSaveService : ISaveService, IFileExtensionService
     {
         private readonly IEnumerable<Type> _knownTypes = new Type[0];
-        public string PreferredFileExtension { get; } = ".xml";
+        public string GetFileExtension() => ".json";
 
         public XmlSaveService(params Type[] knownTypes)
         {

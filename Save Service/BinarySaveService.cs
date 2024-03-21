@@ -6,9 +6,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace SaveSystem.SaveService
 {
     [Serializable]
-    internal class BinarySaveService : ISaveService
+    internal class BinarySaveService : ISaveService, IFileExtensionService
     {
-        public string PreferredFileExtension { get; } = ".bin";
+        public string GetFileExtension() => ".bin";
 
         public bool Delete(string path)
         {

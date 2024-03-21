@@ -1,13 +1,11 @@
-﻿using SaveSystem.SaveService;
+﻿using SaveSystem.SaveRequester.Handler;
 
 namespace SaveSystem.SaveRequester
 {
     public interface ISaveRequester
     {
-        bool Initialized { get; }
-        bool Initialize(ISaveService saveService);
-        bool Save(string path);
-        bool Load(string path);
-        bool Delete(string path);
+        bool Save(ISaveHandler saveHandler, string path);
+        bool Load(ISaveHandler saveHandler, string path);
+        bool Delete(ISaveHandler saveHandler, string path);
     }
 }

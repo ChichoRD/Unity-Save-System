@@ -1,57 +1,47 @@
 #if UNITY_EDITOR
-using RequireAttributes;
 using SaveSystem.Saveable;
-using SaveSystem.SaveRequester;
+using SaveSystem.SaveRequester.Batch;
 using SaveSystem.SaveRequester.SavePath;
-using SaveSystem.SaveService;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace SaveSystem.Sample
 {
-    internal class SaveLoadTest : MonoBehaviour, ISaveable
+    internal class SaveLoadTest : MonoBehaviour, ISaveable<SaveTestData>, IPersistentSaveable
     {
-        //[RequireInterface(typeof(ISavePathProvider))]
-        //[SerializeField] private Object _savePathProviderObject;
-        [SerializeField] private RelativeSavePathProviderObject _savePathProviderObject;
-        private ISavePathProvider SavePathProvider => _savePathProviderObject as ISavePathProvider;
+        [SerializeField]
+        private SavePathFlyweight _savePathService;
+        [SerializeField]
+        private SaveRequester.SaveRequester _saveRequester;
+        [SerializeField]
+        private SubscribableSaveHandler _saveHandler;
+        private PersistentSaveable _persistentSaveable;
+        [SerializeField]
+        private string _key;
 
-        [RequireInterface(typeof(ISaveRequester))]
-        [SerializeField] private Object _saveRequesterObject;
-        private ISaveRequester SaveRequester => _saveRequesterObject as ISaveRequester;
+        [SerializeField]
+        private SaveTestData _saveTestData;
+        public object ID => _persistentSaveable.ID;
 
-        [RequireInterface(typeof(ISaveEventRaiser))]
-        [SerializeField] private Object _saveEventRaiserObject;
-        private ISaveEventRaiser SaveEventRaiser => _saveEventRaiserObject as ISaveEventRaiser;
-
-        [RequireInterface(typeof(IPersistentSaveable))]
-        [SerializeField] private Object _persistentSaveableObject;
-        private IPersistentSaveable PersistentSaveable => _persistentSaveableObject as IPersistentSaveable;
-
-        [SerializeField] private SaveTestData _saveTestData;
-
-        public object GetSaveData()
+        public SaveTestData GetData()
         {
             _saveTestData.testTextureData = _saveTestData.testTexture.GetRawTextureData();
             return _saveTestData;
         }
 
-        public bool TrySetSaveData(object saveData)
+        public bool TrySetData(SaveTestData saveData)
         {
-            if (saveData is not SaveTestData saveTestData) return false;
-
             _saveTestData = new SaveTestData()
             {
-                testInt = saveTestData.testInt,
-                testFloat = saveTestData.testFloat,
-                testString = saveTestData.testString,
+                testInt = saveData.testInt,
+                testFloat = saveData.testFloat,
+                testString = saveData.testString,
                 testTexture = new Texture2D(256, 256),
-                testTextureData = saveTestData.testTextureData,
+                testTextureData = saveData.testTextureData,
             };
 
             //Stopwatch stopwatch = new Stopwatch();
             //stopwatch.Start();
-            _saveTestData.testTexture.LoadRawTextureData(saveTestData.testTextureData);
+            _saveTestData.testTexture.LoadRawTextureData(saveData.testTextureData);
             _saveTestData.testTexture.Apply();
             //stopwatch.Stop();
             //UnityEngine.Debug.Log($"Texture load time: {stopwatch.Elapsed.TotalMilliseconds}ms");
@@ -68,7 +58,7 @@ namespace SaveSystem.Sample
         [ContextMenu(nameof(TestInitialize))]
         private void TestInitialize()
         {
-            SaveRequester.Initialize(new JsonSaveService());
+            //SaveRequester.Initialize(new JsonSaveService());
             //SaveRequester.Initialize(new XmlSaveService(typeof(SaveTestData)));
             //SaveRequester.Initialize(new BinarySaveService());
         }
@@ -76,26 +66,34 @@ namespace SaveSystem.Sample
         [ContextMenu(nameof(TestSubscribe))]
         private void TestSubscribe()
         {
-            SaveEventRaiser.Subscribe(PersistentSaveable);
+            _saveHandler.Subscribe(this);
         }
 
         [ContextMenu(nameof(TestUnsubscribe))]
         private void TestUnsubscribe()
         {
-            SaveEventRaiser.Unsubscribe(PersistentSaveable);
+            _saveHandler.Unsubscribe(this);
         }
 
         [ContextMenu(nameof(TestSave))]
         private void TestSave()
         {
-            SaveRequester.Save(SavePathProvider.GetSavePath());
+            _saveRequester.Save(_saveHandler, _savePathService.GetPath());
         }
 
         [ContextMenu(nameof(TestLoad))]
         private void TestLoad()
         {
-            SaveRequester.Load(SavePathProvider.GetSavePath());
+            _saveRequester.Load(_saveHandler, _savePathService.GetPath());
         }
+
+        private void OnValidate()
+        {
+            _persistentSaveable = new PersistentSaveable(this, _key);
+        }
+
+        object IPersistentSaveable.GetData() => _persistentSaveable.GetData();
+        bool IPersistentSaveable.TrySetData<T>(T saveData) => _persistentSaveable.TrySetData(saveData);
     }
 }
 #endif

@@ -1,6 +1,5 @@
 ﻿namespace SaveSystem.Saveable
 {
-
     internal static class StringExtensions
     {
         public static int GetStableHash(this string str)

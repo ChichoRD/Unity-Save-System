@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35d3b267390bcc14bae6e3fe184578f4, type: 3}
-  m_Name: Save Requester
+  m_Script: {fileID: 11500000, guid: 0b5691988576ba446b7468b6f54ed27a, type: 3}
+  m_Name: SavePathService
   m_EditorClassIdentifier: 
-  _saveServiceFactory: {fileID: 11400000, guid: fb95f3f55f889784b94dbb60eef3b29b, type: 2}
+  _relativePath: SaveFiles/
+  _fileName: data
+  _fileExtension: .json

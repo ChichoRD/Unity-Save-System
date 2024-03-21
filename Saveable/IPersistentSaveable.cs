@@ -2,7 +2,8 @@
 {
     public interface IPersistentSaveable
     {
-        ISaveable Saveable { get; }
-        string ID { get; }
+        object GetData();
+        bool TrySetData<T>(T saveData);
+        object ID { get; }
     }
 }

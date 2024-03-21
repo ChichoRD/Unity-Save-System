@@ -1,20 +1,14 @@
-using RequireAttributes;
-using SaveSystem.SaveRequester;
+using SaveSystem.SaveRequester.Batch;
 using UnityEngine;
 
 namespace SaveSystem.Saveable.Auxiliar
 {
     internal class InitializationSaveableSubscriber : MonoBehaviour
     {
-        [RequireInterface(typeof(ISaveEventRaiser), typeof(ScriptableObject))]
         [SerializeField]
-        private Object _saveEventRaiserObject;
-        private ISaveEventRaiser SaveEventRaiser => _saveEventRaiserObject as ISaveEventRaiser;
-
-        [RequireInterface(typeof(IPersistentSaveable))]
-        [SerializeField]
-        private Object _persistentSaveableObject;
-        private IPersistentSaveable PersistentSaveable => _persistentSaveableObject as IPersistentSaveable;
+        private SubscribableSaveHandler _batchSaveHandler;
+        private ISaveBatch _saveBatch;
+        private IPersistentSaveable _persistentSaveable;
 
         [SerializeField]
         private bool _subscribeOnEnable = true;
@@ -22,13 +16,19 @@ namespace SaveSystem.Saveable.Auxiliar
         [SerializeField]
         private bool _unsubscribeOnDisable = true;
 
-        //[SerializeField]
-        //private bool _unsubscribeOnDestroy = true;
+        [SerializeField]
+        private bool _unsubscribeOnDestroy = false;
 
-        private void OnEnable() => _ = !_subscribeOnEnable || SaveEventRaiser.Subscribe(PersistentSaveable);
+        private void Awake()
+        {
+            _saveBatch = GetComponentInChildren<ISaveBatch>() ?? _batchSaveHandler;
+            _persistentSaveable = GetComponentInChildren<IPersistentSaveable>();
+        }
 
-        private void OnDisable() => _ = !_unsubscribeOnDisable || SaveEventRaiser.Unsubscribe(PersistentSaveable);
+        private void OnEnable() => _ = _subscribeOnEnable && _saveBatch.Subscribe(_persistentSaveable);
 
-        //private void OnDestroy() => _ = !_unsubscribeOnDestroy || SaveEventRaiser.Unsubscribe(PersistentSaveable);
+        private void OnDisable() => _ = _unsubscribeOnDisable && _saveBatch.Unsubscribe(_persistentSaveable);
+
+        private void OnDestroy() => _ = _unsubscribeOnDestroy && _saveBatch.Unsubscribe(_persistentSaveable);
     }
 }
