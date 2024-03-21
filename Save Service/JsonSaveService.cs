@@ -14,6 +14,7 @@ namespace SaveSystem.SaveService
             _jsonSerializerSettings = new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.Auto,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             };
         }
 
