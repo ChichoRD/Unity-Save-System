@@ -5,7 +5,7 @@ namespace SaveSystem.Saveable.Components
     internal class SaveableTransform : MonoBehaviour, ISaveable<SaveableTransform.Transform>
     {
         [SerializeField]
-        private Transform _transform;
+        private UnityEngine.Transform _transform;
 
         public Transform GetData() => Transform.From(transform);
         public bool TrySetData(Transform saveData) => saveData.As(transform);
