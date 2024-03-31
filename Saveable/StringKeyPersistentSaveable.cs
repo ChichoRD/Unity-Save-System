@@ -11,7 +11,7 @@ namespace SaveSystem.Saveable
         private string _key = string.Empty;
         [SerializeField]
         private bool _hashKey;
-        private byte[] _keyHash;
+        private string _keyHash;
 
         private ISaveable _saveable;
         public object ID => _hashKey ? _keyHash : _key;
@@ -21,7 +21,7 @@ namespace SaveSystem.Saveable
             if (_hashKey)
             {
                 UTF8Encoding encoding = new UTF8Encoding();
-                _keyHash = SHA1.Create().ComputeHash(encoding.GetBytes(_key));
+                _keyHash = encoding.GetString(SHA1.Create().ComputeHash(encoding.GetBytes(_key)));
             }
 
             _saveable = GetComponent<ISaveable>() ?? ISaveable.Null;
