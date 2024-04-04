@@ -9,12 +9,12 @@ namespace SaveSystem.Saveable.Components.Texture
     [JsonObject(MemberSerialization.OptOut)]
     [DataContract]
     [Serializable]
-    internal struct SaveableEncodedTexture : IReadOnlySaveable<Texture2D>
+    public struct SaveableEncodedTexture : IReadOnlySaveable<Texture2D>
     {
         public byte[] encodedTextureData;
         public GraphicsFormat graphicsFormat;
 
-        public SaveableEncodedTexture(byte[] encodedTextureData, GraphicsFormat graphicsFormat)
+        internal SaveableEncodedTexture(byte[] encodedTextureData, GraphicsFormat graphicsFormat)
         {
             this.encodedTextureData = encodedTextureData;
             this.graphicsFormat = graphicsFormat;
@@ -34,7 +34,7 @@ namespace SaveSystem.Saveable.Components.Texture
 
         public readonly Texture2D GetData() => AsTexture();
 
-        public static SaveableEncodedTexture From(Texture2D texture, TextureEncodingType encodingType) =>
+        internal static SaveableEncodedTexture From(Texture2D texture, TextureEncodingType encodingType) =>
             new SaveableEncodedTexture(encodingType switch
             {
                 TextureEncodingType.Png => texture.EncodeToPNG(),
@@ -45,17 +45,17 @@ namespace SaveSystem.Saveable.Components.Texture
             },
             texture.graphicsFormat);
 
-        public static SaveableEncodedTexture From(UnityEngine.Texture texture, TextureEncodingType encodingType) =>
+        internal static SaveableEncodedTexture From(UnityEngine.Texture texture, TextureEncodingType encodingType) =>
             From(TextureExtensions.FromTexture(texture), encodingType);
 
-        public static SaveableEncodedTexture From(RenderTexture texture, TextureEncodingType encodingType) =>
+        internal static SaveableEncodedTexture From(RenderTexture texture, TextureEncodingType encodingType) =>
             From(TextureExtensions.FromRenderTexture(texture), encodingType);
     }
 
     [JsonObject(MemberSerialization.OptOut)]
     [DataContract]
     [Serializable]
-    internal struct SaveableEncodedTexture<TEncoder> : IReadOnlySaveable<Texture2D>
+    public struct SaveableEncodedTexture<TEncoder> : IReadOnlySaveable<Texture2D>
         where TEncoder : ITextureEncoder
     {
         public byte[] encodedTextureData;
@@ -68,7 +68,7 @@ namespace SaveSystem.Saveable.Components.Texture
         [NonSerialized]
         private readonly TEncoder _encoder;
 
-        public SaveableEncodedTexture(byte[] encodedTextureData, int width, int height, GraphicsFormat graphicsFormat, TEncoder encoder)
+        internal SaveableEncodedTexture(byte[] encodedTextureData, int width, int height, GraphicsFormat graphicsFormat, TEncoder encoder)
         {
             this.encodedTextureData = encodedTextureData;
             this.width = width;
@@ -85,7 +85,8 @@ namespace SaveSystem.Saveable.Components.Texture
 
         public readonly Texture2D AsTexture(ref Texture2D texture)
         {
-            byte[] rawTextureData = _encoder.Decode(encodedTextureData, out int width, out int height, out GraphicsFormat graphicsFormat);
+            GraphicsFormat graphicsFormat = this.graphicsFormat;
+            byte[] rawTextureData = _encoder.Decode(encodedTextureData, out int width, out int height, ref graphicsFormat);
             texture = new Texture2D(width, height, graphicsFormat, TextureCreationFlags.None);
             texture.LoadRawTextureData(rawTextureData);
             texture.Apply();
@@ -95,17 +96,17 @@ namespace SaveSystem.Saveable.Components.Texture
 
         public readonly Texture2D GetData() => AsTexture();
 
-        public static SaveableEncodedTexture<UEncoder> From<UEncoder>(Texture2D texture, UEncoder encoder)
+        internal static SaveableEncodedTexture<UEncoder> From<UEncoder>(Texture2D texture, UEncoder encoder)
             where UEncoder : ITextureEncoder =>
             new SaveableEncodedTexture<UEncoder>(
                 encoder.Encode(texture.GetRawTextureData(), texture.width, texture.height, texture.graphicsFormat), texture.width, texture.height, texture.graphicsFormat,
                 encoder);
 
-        public static SaveableEncodedTexture<UEncoder> From<UEncoder>(UnityEngine.Texture texture, UEncoder encoder)
+        internal static SaveableEncodedTexture<UEncoder> From<UEncoder>(UnityEngine.Texture texture, UEncoder encoder)
             where UEncoder : ITextureEncoder =>
             From(TextureExtensions.FromTexture(texture), encoder);
 
-        public static SaveableEncodedTexture<UEncoder> From<UEncoder>(RenderTexture texture, UEncoder encoder)
+        internal static SaveableEncodedTexture<UEncoder> From<UEncoder>(RenderTexture texture, UEncoder encoder)
             where UEncoder : ITextureEncoder =>
             From(TextureExtensions.FromRenderTexture(texture), encoder);
     }

@@ -9,14 +9,14 @@ namespace SaveSystem.Saveable.Components.Texture
     [JsonObject(MemberSerialization.OptOut)]
     [DataContract]
     [Serializable]
-    internal struct SaveableRawTexture : IReadOnlySaveable<Texture2D>
+    public struct SaveableRawTexture : IReadOnlySaveable<Texture2D>
     {
         public byte[] rawTextureData;
         public int width;
         public int height;
         public GraphicsFormat graphicsFormat;
 
-        public SaveableRawTexture(byte[] rawTextureData, int width, int height, GraphicsFormat graphicsFormat)
+        internal SaveableRawTexture(byte[] rawTextureData, int width, int height, GraphicsFormat graphicsFormat)
         {
             this.rawTextureData = rawTextureData;
             this.width = width;

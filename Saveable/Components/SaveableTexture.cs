@@ -32,8 +32,8 @@ namespace SaveSystem.Saveable.Components
             EncodingType.Jpg => SaveableEncodedTexture.From(_renderTexture, (TextureEncodingType)_encodingType),
             EncodingType.Exr => SaveableEncodedTexture.From(_renderTexture, (TextureEncodingType)_encodingType),
             EncodingType.Tga => SaveableEncodedTexture.From(_renderTexture, (TextureEncodingType)_encodingType),
-            EncodingType.Qoi => SaveableRawTexture.From(_renderTexture),
-            EncodingType.Raw => SaveableEncodedTexture<QoiTextureEncoder>.From(_renderTexture, QoiTextureEncoder.Instance),
+            EncodingType.Qoi => SaveableEncodedTexture<QoiTextureEncoder>.From(_renderTexture, QoiTextureEncoder.Instance),
+            EncodingType.Raw => SaveableRawTexture.From(_renderTexture),
             _ => SaveableEncodedTexture.From(_renderTexture, TextureEncodingType.Png),
         };
 
