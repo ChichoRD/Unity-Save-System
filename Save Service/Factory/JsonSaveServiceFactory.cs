@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using UnityEditor.PackageManager;
 using UnityEngine;
 #if UNITY_EDITOR
+using UnityEditor.PackageManager;
 using UnityEditor;
 #endif
 
